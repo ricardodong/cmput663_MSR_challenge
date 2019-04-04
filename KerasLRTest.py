@@ -56,8 +56,8 @@ for i in range(250):
 for i in range(1000):
     trainY[i] = int(trainY[i])
 
-print(trainX)
-print(trainY)
+#print(trainX)
+#print(trainY)
 
 logRes = MLPClassifier()
 logRes.fit(trainX, trainY)
@@ -70,7 +70,49 @@ count = 0
 Length = len(testY)
 print('\nTesting ------------')
 testRes = logRes.predict(testX)
-print(precision_score(testY, testRes))
+#print(precision_score(testY, testRes))
+
+scores = np.zeros(1024)
+switchs = np.zeros((1024, 10))
+maxswitch = np.ones((10,))
+maxscore = 0
+for i in range(1024):
+    icopy = i
+    switch = np.zeros((10,))
+    for j in range(10):
+        (icopy, switch[j]) = np.divmod(icopy,2)
+    print(switch)
+    length = 0
+    newTrainX = np.ones((len(trainY), 1))
+    newTestX = np.ones((len(testY), 1))
+    for j in range(10):
+        if switch[j] == 1:
+            length = length + 1
+            newTrainX = np.c_[newTrainX, trainX[:,j]]
+            newTestX = np.c_[newTestX, testX[:,j]]
+    print(newTrainX.shape[1])
+
+    logRes = LogisticRegression()
+    logRes.fit(newTrainX, trainY)
+    testRes = logRes.predict(newTestX)
+    score = precision_score(testY, testRes)
+    print(score)
+
+    scores =
+    if score > maxscore:
+        maxscore = score
+        maxswitch = switch
+
+
+print("max:")
+print(maxswitch)
+print(maxscore)
+
+for key, value in sorted(mydict.iteritems(), key=lambda (k,v): (v,k)):
+    print "%s: %s" % (key, value)
+
+
+
 '''
 for i in range(Length):
     if logRes.predict(testX)[i] != testY[i]:  # 预测测试样本
