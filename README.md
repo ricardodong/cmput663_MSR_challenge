@@ -7,3 +7,5 @@ Paper for MSR 2019 mining challenge by Shutong Li and Yixing Luan's group
 ```
 np.mean(cross_val_score(logRes, newTestX, testY, cv=10, scoring='precision_macro'))
 ```
+
+[KerasLRTest.py](https://github.com/ricardodong/cmput663_MSR_challenge/blob/master/KerasLRTest.py) is the code to get the result of finding best parameter for our method, it does not have a main, but you can directly run it.
