@@ -12,6 +12,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import precision_score
+from sklearn.model_selection import cross_val_score
 
 ans1 = open("token_train_ans.txt", 'r')
 ans1Handled = open("token_train_ans_handled.txt", 'w')
@@ -70,12 +71,18 @@ count = 0
 Length = len(testY)
 print('\nTesting ------------')
 testRes = logRes.predict(testX)
-#print(precision_score(testY, testRes))
+print(precision_score(testY, testRes))
+'''
+for i in range(Length):
+    if logRes.predict(testX)[i] != testY[i]:  # 预测测试样本
+        count += 1
+        print(testY[i])
+
+print(count)
+'''
 
 scores = np.zeros(1024)
 switchs = np.zeros((1024, 10))
-maxswitch = np.ones((10,))
-maxscore = 0
 for i in range(1024):
     icopy = i
     switch = np.zeros((10,))
@@ -94,34 +101,17 @@ for i in range(1024):
 
     logRes = LogisticRegression()
     logRes.fit(newTrainX, trainY)
-    testRes = logRes.predict(newTestX)
-    score = precision_score(testY, testRes)
-    print(score)
+    #testRes = logRes.predict(newTestX)
+    #score = precision_score(testY, testRes)
+    scores[i] = np.mean(cross_val_score(logRes, newTestX, testY, cv=10, scoring='precision_macro'))
+    switchs[i] = switch
+    #print(score)
 
-    scores =
-    if score > maxscore:
-        maxscore = score
-        maxswitch = switch
-
-
-print("max:")
-print(maxswitch)
-print(maxscore)
-
-for key, value in sorted(mydict.iteritems(), key=lambda (k,v): (v,k)):
-    print "%s: %s" % (key, value)
-
-
-
-'''
-for i in range(Length):
-    if logRes.predict(testX)[i] != testY[i]:  # 预测测试样本
-        count += 1
-        print(testY[i])
-
-print(count)
-'''
-
+print("best cases")
+maxposi = scores.argsort()
+for i in range(10):
+    print(switchs[maxposi[1023-i]])
+    print(scores[maxposi[1023-i]])
 
 
 '''
